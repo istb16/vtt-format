@@ -1,0 +1,32 @@
+name: Deploy view-char
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      working-directory: ./
+    
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+      - name: install
+        working-directory: ${{ env.working-directory }}
+        run: git install
+      - name: Build
+        working-directory: ${{ env.working-directory }}
+        run: git run build
+      - name: Generate SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Deploy
+        working-directory: ${{ env.working-directory }}
+        run: rsync -ahvz --delete -e "ssh -i ~/.ssh/id_rsa -p 50022 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./public/ ubuntu@tk3.biz:/var/www/vtt-format/
