@@ -4,9 +4,9 @@
   function convertVttText() {
     let converted = inVttText.replace(/.*-->.*\n/g, '');
     converted = converted.replace(/WEBVTT\n/g, '');
-    converted = '\n' + converted + '\n';
     converted = converted.replace(/(\r\n|\n\r|\n|\r)(\r\n|\n\r|\n|\r)/g, '\n');
-    converted = converted.slice(0, -1).slice(1);
+    converted = converted.replace(/^(\r\n|\n\r|\n|\r)/g, '');
+    converted = converted.replace(/(\r\n|\n\r|\n|\r)$/g, '');
     outText = converted;
   }
 </script>
