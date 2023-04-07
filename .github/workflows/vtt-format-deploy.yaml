@@ -1,4 +1,4 @@
-name: Deploy view-char
+name: Deploy vtt-format
 
 on:
   push:
@@ -18,10 +18,10 @@ jobs:
           node-version: "18"
       - name: install
         working-directory: ${{ env.working-directory }}
-        run: git install
+        run: npm install
       - name: Build
         working-directory: ${{ env.working-directory }}
-        run: git run build
+        run: npm run build
       - name: Generate SSH key
         run: |
           mkdir -p ~/.ssh/
