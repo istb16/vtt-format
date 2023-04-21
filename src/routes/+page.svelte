@@ -1,13 +1,80 @@
-<script>
+<script lang="ts">
   let inVttText = "";
   let outText = "";
+  let dragging = false;
   function convertVttText() {
-    let converted = inVttText.replace(/.*-->.*\n/g, '');
-    converted = converted.replace(/WEBVTT\n/g, '');
-    converted = converted.replace(/(\r\n|\n\r|\n|\r)(\r\n|\n\r|\n|\r)/g, '\n');
-    converted = converted.replace(/^(\r\n|\n\r|\n|\r)/g, '');
-    converted = converted.replace(/(\r\n|\n\r|\n|\r)$/g, '');
+    let converted = normalizeNewLine(inVttText);
+    if (isWebVtt(converted)) {
+      converted = sortWebVtt(converted);
+    }
     outText = converted;
+  }
+
+  interface WebVttCue {
+    header: string;
+    cues: string[];
+  }
+
+  function normalizeNewLine(text: string): string {
+    return text.replace(/(\r\n|\n\r|\n|\r)/g, '\n');
+  }
+
+  function isWebVtt(text: string): boolean {
+    return text.startsWith('WEBVTT');
+  }
+
+  function sortWebVtt(text: string): string{
+    const lines = text.split('\n');
+    const cues = readCueInWebVtt(lines);
+    const sorted = sortWebVttCue(cues);
+    const sortedText = sorted.flatMap(cue => cue.cues.flatMap(c => c));
+    return sortedText.join("\n");
+  }
+
+  function readCueInWebVtt(lines: string[]): WebVttCue[] {
+    let cues : WebVttCue[] = [];
+    let isIgnore = true;
+    lines.forEach(line => {
+      if (line.match(/.*-->.*/)) {
+        cues.push({header: line, cues: []});
+        isIgnore = false;
+      }
+      else if (!isIgnore)
+      {
+        let value = line.trim();
+        if (value.length <= 0) isIgnore = true;
+        else cues[cues.length - 1].cues.push(value);
+      }      
+    });
+    return cues;
+  }
+
+  function sortWebVttCue(cues: WebVttCue[]): WebVttCue[] {
+    return cues.sort((a, b) => {
+      let aTime = a.header.split(' --> ')[0];
+      let bTime = b.header.split(' --> ')[0];
+      return aTime.localeCompare(bTime);
+    });
+  }
+
+  function inVttTextDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  function inVttTextDrop(event: DragEvent) {
+    event.preventDefault();
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          inVttText = e.target.result.toString();
+          convertVttText();
+        }
+      };
+      reader.readAsText(file);
+    }
   }
 </script>
 
@@ -15,7 +82,13 @@
 
 <div>
   <label for="inVttText">VTT text:</label>
-  <textarea id="inVttText" bind:value={inVttText}></textarea>
+  <!-- svelte-ignore a11y-autofocus -->
+  <textarea id="inVttText" bind:value={inVttText}
+    class:dragging autofocus
+    on:dragenter={_ => dragging = true}
+    on:dragleave={_ => dragging = false}
+    on:dragover={inVttTextDragOver}
+    on:drop={ev => {dragging = false; inVttTextDrop(ev);}}></textarea>
 </div>
 
 <button on:click|preventDefault={convertVttText}>Convert!</button>
@@ -28,7 +101,15 @@
 <style>
   textarea {
     width: 100%;
-    height: 5rem;
+    height: 30vh;
+  }
+
+  .dragging {
+    background-image: url('drop.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 4rem;
+    background-color: #ddd;
   }
 
   button {
