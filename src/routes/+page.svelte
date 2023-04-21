@@ -76,6 +76,22 @@
       reader.readAsText(file);
     }
   }
+
+  function copyToClipboardOutput() {
+    copyToClipboard(outText);
+    alert('Copied to your clipboard.');
+  }
+
+  function copyToClipboard(item: any): void {
+    let listener = (e: ClipboardEvent) => {
+        e.clipboardData?.setData('text/plain', (item));
+        e.preventDefault();
+    };
+
+    document.addEventListener('copy', listener);
+    document.execCommand('copy');
+    document.removeEventListener('copy', listener);
+  }
 </script>
 
 <h1>VTT formatter for text</h1>
@@ -91,12 +107,14 @@
     on:drop={ev => {dragging = false; inVttTextDrop(ev);}}></textarea>
 </div>
 
-<button on:click|preventDefault={convertVttText}>Convert!</button>
+<button on:click|preventDefault={convertVttText}>Convert</button>
 
 <div>
   <label for="outText">Output text:</label>
   <textarea id="outText" readonly bind:value={outText}></textarea>
 </div>
+
+<button on:click|preventDefault={copyToClipboardOutput}>Copy Output</button>
 
 <style>
   textarea {
