@@ -23,11 +23,10 @@ jobs:
       - name: Build
         working-directory: ${{ env.working-directory }}
         run: npm run build
-      - name: Generate SSH key
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
       - name: Deploy
-        working-directory: ${{ env.working-directory }}
-        run: rsync -ahvz --delete -e "ssh -i ~/.ssh/id_rsa -p 50022 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./build/ ubuntu@tk3.biz:/var/www/vtt-format/
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_VTT_FORMAT }}'
+          channelId: live
+          projectId: vtt-format
