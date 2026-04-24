@@ -1,38 +1,52 @@
-# create-svelte
+# VTT Formatter
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+VTT（Web Video Text Tracks）形式の字幕テキストを、読みやすい文章形式に変換するWebツールです。
 
-## Creating a project
+## 機能
 
-If you're seeing this, you've probably already done this step. Congrats!
+- VTTファイルのドラッグ＆ドロップまたはテキスト直接入力に対応
+- タイムスタンプ順のソート
+- ロールアップ字幕の重複テキスト除去
+- タイムギャップに基づく段落分け（1.5秒以上の間隔で改段落）
+- 行末句読点の自動補完（日本語: `。` / 英語: `.`）
+- 変換結果のクリップボードコピー
+
+## 技術スタック
+
+| カテゴリ | ライブラリ |
+|---|---|
+| フレームワーク | [Svelte 5](https://svelte.dev/) / [SvelteKit 2](https://kit.svelte.dev/) |
+| ビルドツール | [Vite 8](https://vitejs.dev/) |
+| 言語 | TypeScript 5 |
+| Linter | ESLint 10 + typescript-eslint 8 |
+| Formatter | Prettier 3 |
+| CI/CD | GitHub Actions |
+
+## 開発環境のセットアップ
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+ブラウザで http://localhost:5173 を開いてください。
 
-To create a production version of your app:
+## スクリプト
+
+| コマンド | 内容 |
+|---|---|
+| `npm run dev` | 開発サーバー起動 |
+| `npm run build` | 本番ビルド（`build/` ディレクトリに出力） |
+| `npm run preview` | 本番ビルドのプレビュー |
+| `npm run check` | Svelte / TypeScript の型チェック |
+| `npm run check:watch` | 型チェック（ウォッチモード） |
+| `npm run lint` | Prettier + ESLint によるコードチェック |
+| `npm run format` | Prettier によるコード自動整形 |
+
+## デプロイ
+
+`main` ブランチにプッシュすると GitHub Actions が自動的にビルド・デプロイします。
 
 ```bash
-npm run build
+git push origin main
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
