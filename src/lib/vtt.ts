@@ -55,6 +55,12 @@ function addPeriod(text: string): string {
 	return text + (hasCJK(text) ? '。' : '.');
 }
 
+const SENTENCE_FINAL_RE = /(でしょうか|ましょうか|ませんか|ですか|でしょう|ましょう|ません|です|ます)$/;
+
+function endsWithSentenceFinal(text: string): boolean {
+	return SENTENCE_FINAL_RE.test(text);
+}
+
 function formatVtt(text: string, paragraphGapSeconds = 1.5): string {
 	const cues = parseCues(text).sort((a, b) => a.start - b.start);
 	const cleaned = removeRollups(cues);
@@ -69,6 +75,8 @@ function formatVtt(text: string, paragraphGapSeconds = 1.5): string {
 		if (gap >= paragraphGapSeconds) {
 			paragraphs.push(addPeriod(current));
 			current = '';
+		} else if (endsWithSentenceFinal(cleaned[i].text)) {
+			current += '。';
 		}
 	}
 
