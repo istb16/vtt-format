@@ -7,21 +7,36 @@
 	let inText = $state('');
 	let outText = $state('');
 	let copied = $state(false);
+	let copiedTimer: ReturnType<typeof setTimeout> | undefined;
+
+	// 出力が変わったら「コピー済み」表示を解除する
+	function resetCopied() {
+		clearTimeout(copiedTimer);
+		copied = false;
+	}
 
 	function handleConvert() {
 		outText = convert(inText);
+		resetCopied();
 	}
 
 	function handleClear() {
 		inText = '';
 		outText = '';
+		resetCopied();
 	}
 
 	async function handleCopy() {
 		if (!outText) return;
-		await navigator.clipboard.writeText(outText);
+		try {
+			await navigator.clipboard.writeText(outText);
+		} catch (err) {
+			console.error('クリップボードへのコピーに失敗しました', err);
+			return;
+		}
 		copied = true;
-		setTimeout(() => (copied = false), 2000);
+		clearTimeout(copiedTimer);
+		copiedTimer = setTimeout(() => (copied = false), 2000);
 	}
 
 	function handleFileDrop(text: string) {
