@@ -6,8 +6,7 @@ interface Cue {
 
 function parseTimeToSeconds(t: string): number {
 	const parts = t.trim().split(':');
-	if (parts.length === 3)
-		return +parts[0] * 3600 + +parts[1] * 60 + parseFloat(parts[2]);
+	if (parts.length === 3) return +parts[0] * 3600 + +parts[1] * 60 + parseFloat(parts[2]);
 	return +parts[0] * 60 + parseFloat(parts[1]);
 }
 
@@ -26,7 +25,10 @@ function parseCues(text: string): Cue[] {
 			i++;
 		}
 		i--;
-		const raw = textLines.join(' ').replace(/<[^>]+>/g, '').trim();
+		const raw = textLines
+			.join(' ')
+			.replace(/<[^>]+>/g, '')
+			.trim();
 		if (raw) cues.push({ start, end, text: raw });
 	}
 	return cues;
@@ -34,9 +36,7 @@ function parseCues(text: string): Cue[] {
 
 // 次のキューが現在のキューで始まる場合（ロールアップ字幕）はスキップ
 function removeRollups(cues: Cue[]): Cue[] {
-	return cues.filter(
-		(cue, i) => i === cues.length - 1 || !cues[i + 1].text.startsWith(cue.text)
-	);
+	return cues.filter((cue, i) => i === cues.length - 1 || !cues[i + 1].text.startsWith(cue.text));
 }
 
 function hasCJK(text: string): boolean {
@@ -55,7 +55,8 @@ function addPeriod(text: string): string {
 	return text + (hasCJK(text) ? '。' : '.');
 }
 
-const SENTENCE_FINAL_RE = /(でしょうか|ましょうか|ませんか|ですか|でしょう|ましょう|ません|です|ます)$/;
+const SENTENCE_FINAL_RE =
+	/(でしょうか|ましょうか|ませんか|ですか|でしょう|ましょう|ません|です|ます)$/;
 
 function endsWithSentenceFinal(text: string): boolean {
 	return SENTENCE_FINAL_RE.test(text);

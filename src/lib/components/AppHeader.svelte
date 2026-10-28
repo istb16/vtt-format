@@ -11,8 +11,24 @@
 		<svg width="18" height="18" viewBox="0 0 18 18" fill="none">
 			<rect x="1.5" y="3.5" width="15" height="11" rx="2" stroke="white" stroke-width="1.6" />
 			<line x1="4" y1="8" x2="10" y2="8" stroke="white" stroke-width="1.6" stroke-linecap="round" />
-			<line x1="4" y1="11.5" x2="14" y2="11.5" stroke="white" stroke-width="1.6" stroke-linecap="round" />
-			<line x1="12" y1="8" x2="14" y2="8" stroke="white" stroke-width="1.6" stroke-linecap="round" />
+			<line
+				x1="4"
+				y1="11.5"
+				x2="14"
+				y2="11.5"
+				stroke="white"
+				stroke-width="1.6"
+				stroke-linecap="round"
+			/>
+			<line
+				x1="12"
+				y1="8"
+				x2="14"
+				y2="8"
+				stroke="white"
+				stroke-width="1.6"
+				stroke-linecap="round"
+			/>
 		</svg>
 	</div>
 	<div>
