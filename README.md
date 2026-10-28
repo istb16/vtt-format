@@ -13,14 +13,15 @@ VTT（Web Video Text Tracks）形式の字幕テキストを、読みやすい�
 
 ## 技術スタック
 
-| カテゴリ | ライブラリ |
-|---|---|
-| フレームワーク | [Svelte 5](https://svelte.dev/) / [SvelteKit 2](https://kit.svelte.dev/) |
-| ビルドツール | [Vite 8](https://vitejs.dev/) |
-| 言語 | TypeScript 5 |
-| Linter | ESLint 10 + typescript-eslint 8 |
-| Formatter | Prettier 3 |
-| CI/CD | GitHub Actions |
+| カテゴリ       | ライブラリ                                                                   |
+| -------------- | ---------------------------------------------------------------------------- |
+| フレームワーク | [Svelte 5](https://svelte.dev/) / [SvelteKit 3](https://svelte.dev/docs/kit) |
+| ビルドツール   | [Vite 8](https://vitejs.dev/)                                                |
+| 言語           | TypeScript 6                                                                 |
+| Linter         | ESLint 10 + typescript-eslint 8                                              |
+| Formatter      | Prettier 3                                                                   |
+| テスト         | Vitest 5                                                                     |
+| CI/CD          | GitHub Actions                                                               |
 
 ## 開発環境のセットアップ
 
@@ -33,15 +34,16 @@ npm run dev
 
 ## スクリプト
 
-| コマンド | 内容 |
-|---|---|
-| `npm run dev` | 開発サーバー起動 |
-| `npm run build` | 本番ビルド（`build/` ディレクトリに出力） |
-| `npm run preview` | 本番ビルドのプレビュー |
-| `npm run check` | Svelte / TypeScript の型チェック |
-| `npm run check:watch` | 型チェック（ウォッチモード） |
-| `npm run lint` | Prettier + ESLint によるコードチェック |
-| `npm run format` | Prettier によるコード自動整形 |
+| コマンド              | 内容                                      |
+| --------------------- | ----------------------------------------- |
+| `npm run dev`         | 開発サーバー起動                          |
+| `npm run build`       | 本番ビルド（`build/` ディレクトリに出力） |
+| `npm run preview`     | 本番ビルドのプレビュー                    |
+| `npm run check`       | Svelte / TypeScript の型チェック          |
+| `npm run check:watch` | 型チェック（ウォッチモード）              |
+| `npm test`            | Vitest によるテスト実行                   |
+| `npm run lint`        | Prettier + ESLint によるコードチェック    |
+| `npm run format`      | Prettier によるコード自動整形             |
 
 ## デプロイ
 

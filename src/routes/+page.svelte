@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { convert } from '$lib/vtt.js';
-	import AppHeader from '$lib/components/AppHeader.svelte';
-	import ConvertButton from '$lib/components/ConvertButton.svelte';
-	import TextPanel from '$lib/components/TextPanel.svelte';
+	import { convert } from '#lib/vtt.js';
+	import AppHeader from '#lib/components/AppHeader.svelte';
+	import ConvertButton from '#lib/components/ConvertButton.svelte';
+	import TextPanel from '#lib/components/TextPanel.svelte';
 
 	let inText = $state('');
 	let outText = $state('');

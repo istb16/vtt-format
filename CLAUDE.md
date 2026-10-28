@@ -8,17 +8,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev          # 開発サーバー起動 (http://localhost:5173)
 npm run build        # 本番ビルド → build/ に出力
 npm run preview      # 本番ビルドをローカルでプレビュー
-npm run check        # Svelte / TypeScript 型チェック
+npm run check        # Svelte / TypeScript 型チェック (svelte-check)
 npm run check:watch  # 型チェック（ウォッチモード）
 npm run lint         # Prettier + ESLint チェック
 npm run format       # Prettier 自動整形
+npm test             # Vitest でテスト実行
 ```
 
-テストは存在しない。型チェックとビルドが品質確認の主な手段。
+型チェック・テスト・Lint・ビルドが品質確認の主な手段。
+
+TypeScript は 6 系に据え置き（Dependabot でも `>=7` を無視）。以下が TS 7 に対応したら上げる:
+
+- `@sveltejs/kit` 3.x — peerDependencies が `typescript: ^6.0.0`。`svelte-kit sync` が TS の JS API（`ts.readConfigFile` 等）を使うため、JS API を持たない TS 7 では動かない
+- `svelte-check` 4.x — peerDependencies が `typescript: ^5.0.0 || ^6.0.0`（TS の言語サービス API に依存）
+- `typescript-eslint` 8.x — peerDependencies が `typescript: >=4.8.4 <6.1.0`（TS の JS API に依存）
 
 ## アーキテクチャ
 
 **単一ページの静的サイト**。SvelteKit の `adapter-static` でビルドし、`main` ブランチへのプッシュで GitHub Actions が Firebase Hosting へデプロイする。
+
+SvelteKit 3 では `src/app.html` の `%sveltekit.env.XXX%` は `src/env.ts` の `defineEnvVars` で宣言した変数しか置換されない。GA の `PUBLIC_GA_MEASUREMENT_ID` もそこで宣言している。
 
 ### データフロー
 
