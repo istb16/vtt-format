@@ -22,6 +22,10 @@ describe('convert', () => {
 		it('非VTTのCRをLFに正規化する', () => {
 			expect(convert('Hello\rworld')).toBe('Hello\nworld');
 		});
+
+		it('先頭に BOM や空行があっても VTT として変換する', () => {
+			expect(convert('\uFEFF\nWEBVTT\n\n00:00:01.000 --> 00:00:02.000\nHello')).toBe('Hello.');
+		});
 	});
 
 	// ─── 空VTT ────────────────────────────────────────────────────
@@ -49,6 +53,33 @@ describe('convert', () => {
 
 		it('複数行のキューテキストをスペースで結合する', () => {
 			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nHello\nworld'))).toBe('Hello world.');
+		});
+
+		it('複数行の日本語キューテキストは空白を入れずに結合する', () => {
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nこんにちは\n世界'))).toBe(
+				'こんにちは世界。'
+			);
+		});
+
+		it('複数行のアクセント付きラテン文字・ハングルは空白で結合する', () => {
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nIl est allé\nà la plage'))).toBe(
+				'Il est allé à la plage.'
+			);
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\n안녕하세요\n여러분'))).toBe(
+				'안녕하세요 여러분.'
+			);
+		});
+
+		it('不正な数値文字参照はデコードしない', () => {
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\na&#0;b&#xD800;c'))).toBe(
+				'a&#0;b&#xD800;c.'
+			);
+		});
+
+		it('文字参照をデコードする', () => {
+			expect(
+				convert(vtt('00:00:01.000 --> 00:00:03.000\nQ&amp;A &lt;b&gt; it&#39;s&nbsp;ok'))
+			).toBe("Q&A <b> it's ok.");
 		});
 
 		it('VTTのCRLF入力を処理する', () => {
@@ -96,6 +127,29 @@ describe('convert', () => {
 		it('末尾が ？ の場合は追加しない', () => {
 			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nそうですか？'))).toBe('そうですか？');
 		});
+
+		it('末尾が閉じ引用符の場合は追加しない', () => {
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nHe said "go."'))).toBe('He said "go."');
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\n「『はい』」と言った『OK』'))).toBe(
+				'「『はい』」と言った『OK』'
+			);
+		});
+	});
+
+	// ─── 非ASCII記号の後の結合 ─────────────────────────────────────
+	describe('非ASCII記号の後の結合', () => {
+		it('非CJKテキストでは … や ” の後に空白を入れる', () => {
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nWell…\nmaybe'))).toBe('Well… maybe.');
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nshe said “hi”\nthen left'))).toBe(
+				'she said “hi” then left.'
+			);
+		});
+
+		it('次が日本語なら … の後に空白を入れない', () => {
+			expect(convert(vtt('00:00:01.000 --> 00:00:03.000\nそうですね…\nはい'))).toBe(
+				'そうですね…はい。'
+			);
+		});
 	});
 
 	// ─── ロールアップ字幕の除去 ───────────────────────────────────
@@ -121,6 +175,20 @@ describe('convert', () => {
 				'00:00:01.000 --> 00:00:02.000\nHello\n\n00:00:02.000 --> 00:00:04.000\nWorld'
 			);
 			expect(convert(input)).toBe('Hello World.');
+		});
+
+		it('英単語の途中で一致しただけの場合は除去しない', () => {
+			const input = vtt(
+				'00:00:01.000 --> 00:00:02.000\nNo\n\n00:00:02.000 --> 00:00:04.000\nNobody knows'
+			);
+			expect(convert(input)).toBe('No Nobody knows.');
+		});
+
+		it('非ASCIIの単語の途中で一致しただけの場合も除去しない', () => {
+			const input = vtt(
+				'00:00:01.000 --> 00:00:02.000\nНет\n\n00:00:02.000 --> 00:00:04.000\nНетрудно'
+			);
+			expect(convert(input)).toBe('Нет Нетрудно.');
 		});
 	});
 
@@ -152,6 +220,13 @@ describe('convert', () => {
 				'00:00:01.000 --> 00:00:02.000\nFirst\n\n00:00:03.499 --> 00:00:05.000\nSecond'
 			);
 			expect(convert(input)).toBe('First Second.');
+		});
+
+		it('浮動小数点誤差があってもちょうど1.5秒のギャップで段落を分ける', () => {
+			const input = vtt(
+				'00:00:01.000 --> 00:00:03.100\nFirst\n\n00:00:04.600 --> 00:00:05.000\nSecond'
+			);
+			expect(convert(input)).toBe('First.\n\nSecond.');
 		});
 
 		it('3つ以上の段落を生成する', () => {
@@ -192,7 +267,7 @@ describe('convert', () => {
 
 		it('丁寧語文末でないキューには段落内で 。 を挿入しない', () => {
 			const input = vtt(
-				'00:00:01.000 --> 00:00:02.000\nこんにちは\n\n' + '00:00:02.500 --> 00:00:04.000\nよろしく'
+				'00:00:01.000 --> 00:00:02.000\nこんにちは\n\n00:00:02.500 --> 00:00:04.000\nよろしく'
 			);
 			expect(convert(input)).toBe('こんにちはよろしく。');
 		});
