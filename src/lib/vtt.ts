@@ -72,6 +72,16 @@ const WORD_CHAR_RE = /[\p{L}\p{N}_]/u;
 // 単語間に空白を入れない文字体系（タイ・ラオ・クメール・ミャンマー）
 const UNSPACED_SCRIPT_RE = /[\p{scx=Thai}\p{scx=Lao}\p{scx=Khmer}\p{scx=Myanmar}]/u;
 
+// サロゲートペア（𠮷 や絵文字など）を分断せずに先頭・末尾の 1 文字を取り出す
+function charAt(text: string, index: number): string | undefined {
+	const cp = text.codePointAt(index);
+	return cp === undefined ? undefined : String.fromCodePoint(cp);
+}
+
+function lastChar(text: string): string {
+	return Array.from(text.slice(-2)).pop() ?? '';
+}
+
 // 空白で単語を区切る言語の文字か（ラテン・キリル・ハングル等の英数字。日中・タイ等の文字は除く）
 function isSpacedWordChar(ch: string): boolean {
 	return WORD_CHAR_RE.test(ch) && !CJK_CHAR_RE.test(ch) && !UNSPACED_SCRIPT_RE.test(ch);
@@ -81,11 +91,9 @@ function isSpacedWordChar(ch: string): boolean {
 // ただし単語の途中で一致しただけ（"No" → "Nobody"）は除く
 function isRolledUpInto(cur: string, next: string): boolean {
 	if (!next.startsWith(cur)) return false;
-	const following = next[cur.length];
+	const following = charAt(next, cur.length);
 	return (
-		following === undefined ||
-		!isSpacedWordChar(cur[cur.length - 1]) ||
-		!isSpacedWordChar(following)
+		following === undefined || !isSpacedWordChar(lastChar(cur)) || !isSpacedWordChar(following)
 	);
 }
 
@@ -101,17 +109,17 @@ function hasCJK(text: string): boolean {
 
 function joinTexts(a: string, b: string): string {
 	if (!a) return b;
-	const last = a[a.length - 1];
+	const last = lastChar(a);
 	// 「…」「”」「—」等の非ASCII記号の後も、次が日中の文字でなければ空白で区切る
 	const needsSpace =
 		!/\s/.test(last) &&
 		!CJK_CHAR_RE.test(last) &&
-		(last.charCodeAt(0) < 128 || isSpacedWordChar(last) || !CJK_CHAR_RE.test(b[0]));
+		(last.charCodeAt(0) < 128 || isSpacedWordChar(last) || !CJK_CHAR_RE.test(charAt(b, 0) ?? ''));
 	return a + (needsSpace ? ' ' : '') + b;
 }
 
 function addPeriod(text: string): string {
-	const last = text[text.length - 1];
+	const last = lastChar(text);
 	if ('。！？…」』）)】"”.!?'.includes(last)) return text;
 	return text + (hasCJK(text) ? '。' : '.');
 }
