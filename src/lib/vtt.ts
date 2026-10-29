@@ -68,9 +68,13 @@ function parseCues(text: string): Cue[] {
 
 const CJK_CHAR_RE = /[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}\u3000-\u303f\uff00-\uffef]/u;
 
-// 空白で単語を区切る言語の文字か（ラテン・キリル・ハングル等の英数字。日中の文字は除く）
+const WORD_CHAR_RE = /[\p{L}\p{N}_]/u;
+// 単語間に空白を入れない文字体系（タイ・ラオ・クメール・ミャンマー）
+const UNSPACED_SCRIPT_RE = /[\p{scx=Thai}\p{scx=Lao}\p{scx=Khmer}\p{scx=Myanmar}]/u;
+
+// 空白で単語を区切る言語の文字か（ラテン・キリル・ハングル等の英数字。日中・タイ等の文字は除く）
 function isSpacedWordChar(ch: string): boolean {
-	return /[\p{L}\p{N}_]/u.test(ch) && !CJK_CHAR_RE.test(ch);
+	return WORD_CHAR_RE.test(ch) && !CJK_CHAR_RE.test(ch) && !UNSPACED_SCRIPT_RE.test(ch);
 }
 
 // 次のキューが現在のキューで始まる場合（ロールアップ字幕）

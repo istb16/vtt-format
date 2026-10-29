@@ -27,13 +27,16 @@
 	}
 
 	async function handleCopy() {
-		if (!outText) return;
+		const text = outText;
+		if (!text) return;
 		try {
-			await navigator.clipboard.writeText(outText);
+			await navigator.clipboard.writeText(text);
 		} catch (err) {
 			console.error('クリップボードへのコピーに失敗しました', err);
 			return;
 		}
+		// コピー完了までに出力が変わっていたら「コピー済み」にしない
+		if (outText !== text) return;
 		copied = true;
 		clearTimeout(copiedTimer);
 		copiedTimer = setTimeout(() => (copied = false), 2000);
