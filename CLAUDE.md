@@ -17,7 +17,7 @@ npm test             # Vitest でテスト実行
 
 型チェック・テスト・Lint・ビルドが品質確認の主な手段。
 
-TypeScript は 6 系に据え置き（Dependabot でも `>=7` を無視）。以下が TS 7 に対応したら上げる:
+TypeScript は 6.0 系に据え置き（Dependabot でも `>=6.1` を無視。typescript-eslint の peer が `<6.1.0` のため）。以下が TS 7 に対応したら上げる:
 
 - `@sveltejs/kit` 3.x — peerDependencies が `typescript: ^6.0.0`。`svelte-kit sync` が TS の JS API（`ts.readConfigFile` 等）を使うため、JS API を持たない TS 7 では動かない
 - `svelte-check` 4.x — peerDependencies が `typescript: ^5.0.0 || ^6.0.0`（TS の言語サービス API に依存）

@@ -10,7 +10,7 @@ updates:
         update-types: [minor, patch]
     ignore:
       - dependency-name: typescript
-        versions: ['>=7']
+        versions: ['>=6.1']
 
   - package-ecosystem: github-actions
     directory: /
