@@ -6,7 +6,7 @@
 </script>
 
 <div class="col">
-	<button class="btn" {onclick}>
+	<button class="tk-btn btn" {onclick}>
 		<svg
 			width="20"
 			height="20"
@@ -30,43 +30,38 @@
 		justify-content: center;
 	}
 
+	/* 色は .tk-btn のまま。入力と出力のあいだに縦に置くため、形だけを変える */
 	.btn {
-		background: linear-gradient(160deg, var(--color-primary), var(--color-accent));
-		color: white;
-		border: none;
-		border-radius: 14px;
-		padding: 1.1rem 0.8rem;
-		cursor: pointer;
-		display: flex;
 		flex-direction: column;
-		align-items: center;
 		gap: 0.45rem;
-		font-family: inherit;
+		min-block-size: 0;
+		padding: 1.1rem 0.8rem;
+		border-radius: 14px;
 		font-size: 0.8rem;
-		font-weight: 600;
 		letter-spacing: 0.02em;
-		transition:
-			transform 0.18s,
-			box-shadow 0.18s;
-		box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
 	}
 
-	.btn:hover {
-		transform: scale(1.07);
-		box-shadow: 0 6px 20px rgba(14, 165, 233, 0.45);
-	}
+	@media (prefers-reduced-motion: no-preference) {
+		.btn {
+			transition:
+				filter 0.15s,
+				transform 0.18s;
+		}
 
-	.btn:active {
-		transform: scale(0.96);
-		box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+		.btn:hover {
+			transform: scale(1.07);
+		}
+
+		.btn:active {
+			transform: scale(0.96);
+		}
 	}
 
 	@media (max-width: 768px) {
 		.btn {
 			flex-direction: row;
 			padding: 0.875rem 2rem;
-			width: 100%;
-			justify-content: center;
+			inline-size: 100%;
 			border-radius: 10px;
 			gap: 0.5rem;
 		}

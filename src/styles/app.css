@@ -1,0 +1,20 @@
+/* アプリ全体の CSS。tk-base.css（tk3 apps の共通の土台）のあとに読み込む */
+
+:root {
+	--tk-accent: var(--tk-blue);
+
+	/* アプリ固有の色: ファイルをドラッグしているときに入力欄を覆う面 */
+	--vtt-drop-bg: rgb(238 243 253 / 0.94);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--vtt-drop-bg: rgb(28 29 33 / 0.94);
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
