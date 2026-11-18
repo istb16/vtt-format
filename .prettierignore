@@ -11,3 +11,6 @@ node_modules
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+# tk3 apps の共通の土台。正本の写しなので整形しない
+/src/styles/tk-base.css

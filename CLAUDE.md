@@ -42,9 +42,9 @@ SvelteKit 3 では `src/app.html` の `%sveltekit.env.XXX%` は `src/env.ts` の
 
 `+page.svelte` がルートで、状態 (`$state`) とハンドラのみを持つ。UI は 3 つのコンポーネントに分割されている。
 
-- **`AppHeader`** — ロゴ・タイトル表示のみ。プロパティで文言を受け取る
+- **`AppHeader`** — 共通の土台の `.tk-header`（アイコン＋アプリ名「VTT TEXT FORMATTER」）と説明文。プロパティで文言を受け取る
 - **`TextPanel`** — 入力・出力両方に使う汎用パネル。`bind:value` で双方向バインド、`onFileDrop` コールバックでファイルドロップを処理、`action` スニペットでヘッダー右側のボタンを差し込む。ドラッグ状態 (`dragging`) はコンポーネント内部に閉じている
-- **`ConvertButton`** — ラッパー `div` 込みで自己完結したグラデーションボタン
+- **`ConvertButton`** — ラッパー `div` 込みで自己完結した変換ボタン（`.tk-btn` の色で、形だけを縦長に変える）
 
 ### VTT 変換ロジック (`src/lib/vtt.ts`)
 
@@ -60,4 +60,14 @@ SvelteKit 3 では `src/app.html` の `%sveltekit.env.XXX%` は `src/env.ts` の
 
 ### CSS 設計
 
-デザイントークン（カラー変数）は `+page.svelte` の `:global(:root)` で定義し、全コンポーネントが `var(--color-primary)` 等で参照する。`TextPanel` の action スニペット内ボタンのスタイル (`btn-ghost`) は、スニペット定義元である `+page.svelte` のスコープが適用されるため、そこで定義している。
+tk3.biz から公開しているアプリで共通の見た目の土台（tk3 apps base）を使う。
+
+- `src/styles/tk-base.css` — 共通の土台。色（明暗）・フォント・角丸・影の変数（`--tk-*`）と、`.tk-header`・`.tk-footer`・`.tk-panel`・`.tk-btn` の部品。**正本の写しなので手を加えない**（Prettier の対象からも外している）。直すときは tk3-biz-html の `design/tk3-apps/tk-base.css` を直して写し直す
+- `src/styles/app.css` — アプリ全体の CSS。アクセント（`--tk-accent: var(--tk-blue)`）と、アプリ固有の色（`--vtt-drop-bg`）を明暗の両方で持つ
+- 2 つとも `src/routes/+layout.svelte` で、土台 → アプリの順に読み込む
+
+色は `--tk-*` を使い、コンポーネントに色の値を直に書かない。アプリ固有の色が要るときは `app.css` に変数を足し、`@media (prefers-color-scheme: dark)` で暗い配色の値も持たせる（`light-dark()` は使わない）。ダークモードは端末の設定に従い、切り替えボタンは置かない。文字と背景のコントラストは明暗どちらでも 4.5:1 以上にする。
+
+`TextPanel` の action スニペット内ボタンのスタイル (`btn-ghost`) は、スニペット定義元である `+page.svelte` のスコープが適用されるため、そこで定義している。
+
+アイコンは `static/icon.svg`（`icon-32.png`・`apple-touch-icon.png` も）で、`src/app.html` から参照する。

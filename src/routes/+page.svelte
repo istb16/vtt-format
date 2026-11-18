@@ -49,7 +49,7 @@
 </script>
 
 <div class="app">
-	<AppHeader title="VTT Formatter" subtitle="字幕テキストを読みやすい文章形式に変換" />
+	<AppHeader title="VTT TEXT FORMATTER" subtitle="字幕テキストを読みやすい文章形式に変換" />
 
 	<main>
 		<div class="workspace">
@@ -110,38 +110,16 @@
 			</TextPanel>
 		</div>
 	</main>
+
+	<footer class="tk-footer">
+		<a href="https://tk3.biz/">tk3.biz</a>
+	</footer>
 </div>
 
 <style>
-	/* ── Design tokens ── */
-	:global(:root) {
-		--color-primary: #0ea5e9;
-		--color-accent: #6366f1;
-		--color-bg: #f1f5f9;
-		--color-surface: #ffffff;
-		--color-border: #e2e8f0;
-		--color-text: #0f172a;
-		--color-text-body: #1e293b;
-		--color-text-muted: #64748b;
-		--color-text-faint: #94a3b8;
-	}
-
-	:global(*, *::before, *::after) {
-		box-sizing: border-box;
-	}
-
-	:global(body) {
-		margin: 0;
-		font-family:
-			-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
-		background: var(--color-bg);
-		color: var(--color-text);
-		min-height: 100vh;
-	}
-
 	/* ── Layout ── */
 	.app {
-		min-height: 100vh;
+		min-block-size: 100dvh;
 		display: flex;
 		flex-direction: column;
 	}
@@ -168,12 +146,12 @@
 		align-items: center;
 		gap: 0.3rem;
 		background: none;
-		border: 1px solid var(--color-border);
+		border: 1px solid var(--tk-line);
 		border-radius: 6px;
 		padding: 0.25rem 0.6rem;
 		font-size: 0.73rem;
 		cursor: pointer;
-		color: var(--color-text-muted);
+		color: var(--tk-muted);
 		font-family: inherit;
 		line-height: 1.4;
 		transition:
@@ -183,15 +161,15 @@
 	}
 
 	.btn-ghost:hover {
-		background: var(--color-bg);
-		color: #334155;
-		border-color: #cbd5e1;
+		background: var(--tk-surface);
+		color: var(--tk-ink);
+		border-color: var(--tk-muted);
 	}
 
 	.btn-ghost.is-copied {
-		background: #f0fdf4;
-		border-color: #86efac;
-		color: #16a34a;
+		background: var(--tk-surface);
+		border-color: var(--tk-green);
+		color: var(--tk-green);
 	}
 
 	/* ── Responsive ── */

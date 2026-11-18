@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="panel">
+<div class="tk-panel panel">
 	<div class="panel-header">
 		<span class="panel-label">{label}</span>
 		{#if action}
@@ -84,12 +84,9 @@
 </div>
 
 <style>
+	/* 地・線・角丸・影は .tk-panel のまま。中身を端まで広げるため余白はなくす */
 	.panel {
-		background: var(--color-surface);
-		border-radius: 12px;
-		box-shadow:
-			0 1px 3px rgba(0, 0, 0, 0.07),
-			0 1px 2px rgba(0, 0, 0, 0.04);
+		padding: 0;
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
@@ -101,8 +98,8 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 0.6rem 1rem;
-		border-bottom: 1px solid #f1f5f9;
-		background: #f8fafc;
+		border-bottom: 1px solid var(--tk-line);
+		background: var(--tk-surface-2);
 		flex-shrink: 0;
 	}
 
@@ -111,7 +108,7 @@
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 0.09em;
-		color: var(--color-text-faint);
+		color: var(--tk-muted);
 	}
 
 	.panel-actions {
@@ -126,15 +123,15 @@
 	}
 
 	.textarea-wrap.is-dragging {
-		outline: 2px dashed var(--color-primary);
+		outline: 2px dashed var(--tk-accent);
 		outline-offset: -3px;
-		border-radius: 0 0 12px 12px;
+		border-radius: 0 0 var(--tk-radius) var(--tk-radius);
 	}
 
 	.drop-overlay {
 		position: absolute;
 		inset: 0;
-		background: rgba(240, 249, 255, 0.93);
+		background: var(--vtt-drop-bg);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -142,7 +139,7 @@
 		gap: 0.6rem;
 		font-size: 0.875rem;
 		font-weight: 500;
-		color: var(--color-primary);
+		color: var(--tk-accent);
 		pointer-events: none;
 		z-index: 1;
 	}
@@ -158,12 +155,12 @@
 		font-family: inherit;
 		font-size: 0.875rem;
 		line-height: 1.8;
-		color: var(--color-text-body);
+		color: var(--tk-ink);
 		background: transparent;
 		outline: none;
 	}
 
 	textarea::placeholder {
-		color: #cbd5e1;
+		color: var(--tk-muted);
 	}
 </style>
