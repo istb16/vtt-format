@@ -84,13 +84,21 @@
 </div>
 
 <style>
-	/* 地・線・角丸・影は .tk-panel のまま。中身を端まで広げるため余白はなくす */
+	/* 地・角丸・影は .tk-panel のまま。中身を端まで広げるため余白はなくす。
+	   枠はテキストエリアの枠を兼ねるので、入力欄の枠の色（--tk-line-strong）にする */
 	.panel {
 		padding: 0;
+		border-color: var(--tk-line-strong);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		min-height: 0;
+	}
+
+	/* テキストエリア自身は枠を描かないので、フォーカスの枠はパネルの外側に描く */
+	.panel:has(textarea:focus-visible) {
+		outline: 2px solid var(--tk-accent);
+		outline-offset: 2px;
 	}
 
 	.panel-header {
